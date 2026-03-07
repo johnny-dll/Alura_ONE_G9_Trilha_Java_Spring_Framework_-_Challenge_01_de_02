@@ -4,6 +4,7 @@ import br.com.alura.literalura.model.Autor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.List;
 
 @Repository
@@ -12,6 +13,6 @@ public interface AutorRepository extends JpaRepository<Autor, Long> {
     // Consulta derivada para autores vivos em determinado ano
     List<Autor> findByAnoNascimentoLessThanEqualAndAnoFalecimentoGreaterThanEqual(Integer anoNascimento, Integer anoFalecimento);
 
-    // Agora retorna lista para evitar NonUniqueResultException
-    List<Autor> findByNome(String nome);
+    // Retorna Optional para evitar problemas de duplicidade
+    Optional<Autor> findByNome(String nome);
 }

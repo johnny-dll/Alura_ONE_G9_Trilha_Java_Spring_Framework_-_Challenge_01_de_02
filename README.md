@@ -19,18 +19,24 @@ Catálogo de livros funcional integrado à API Gutendex, desenvolvido como parte
 
 Clone o repositório:
 
+```
 git clone https://github.com/johnny-dll/Alure_ONE_G9_Trilha_Java_Spring_Framework_-_Challenge_01_de_02.git
+```
 
 Acesse a pasta do projeto:
 
+```
 cd literalura
+```
 
 Configure o banco de dados:  
 Ajuste o arquivo `src/main/resources/application.properties` com suas credenciais do PostgreSQL.
 
 Execute a aplicação:
 
+```
 ./mvnw spring-boot:run
+```
 
 > ⚠️ **Observação:** garanta que o profile `local` esteja ativo para usar o banco de desenvolvimento.
 
@@ -38,20 +44,22 @@ Execute a aplicação:
 
 A interação ocorre diretamente via terminal através de um menu intuitivo:
 
-[1] | Buscar livro pelo título: Consome a API Gutendex e persiste no banco.  
-[2] | Listar livros: Exibe todos os registros salvos localmente.  
-[3] | Listar autores: Mostra todos os autores cadastrados no banco.  
-[4] | Autores vivos em determinado ano: Realiza um filtro temporal de autores.  
-[5] | Listar livros por idioma: Filtro por siglas (PT, EN, FR, ES).
+- `[1]` | Buscar livro pelo título: Consome a API Gutendex e persiste no banco.
+- `[2]` | Listar livros: Exibe todos os registros salvos localmente.
+- `[3]` | Listar autores: Mostra todos os autores cadastrados no banco.
+- `[4]` | Autores vivos em determinado ano: Realiza um filtro temporal de autores.
+- `[5]` | Listar livros por idioma: Filtro por siglas (PT, EN, FR, ES).
 
 ## 🔑 Configurações (Environment Variables)
 
 Para rodar este projeto, configure as seguintes propriedades no `application.properties`:
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/literalura_db  
-spring.datasource.username=seu_usuario  
-spring.datasource.password=sua_senha  
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/literalura_db
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
 spring.profiles.active=local
+```
 
 > ⚠️ **Dica:** garanta que o banco `literalura_db` esteja criado e acessível localmente antes de iniciar a aplicação.
 
@@ -59,7 +67,9 @@ spring.profiles.active=local
 
 Para garantir que os testes rodem com o banco limpo, você pode executar no PostgreSQL:
 
+```
 TRUNCATE TABLE autor, livro RESTART IDENTITY CASCADE;
+```
 
 Explicação:
 

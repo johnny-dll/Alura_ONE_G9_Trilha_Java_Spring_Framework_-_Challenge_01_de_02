@@ -13,7 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConsumoApi {
@@ -69,13 +69,13 @@ public class ConsumoApi {
 
             if (!bookDto.getAuthors().isEmpty()) {
                 BookResponse.Book.Author aDto = bookDto.getAuthors().get(0);
-                List<Autor> autores = autorRepository.findByNome(aDto.getName());
-                if (autores.isEmpty()) {
-                    autor = new Autor(aDto.getName(), aDto.getBirthYear(), aDto.getDeathYear());
-                    autorRepository.save(autor);
-                } else {
-                    autor = autores.get(0);
-                }
+
+                // Usando Optional<Autor> agora
+                Optional<Autor> autorExistente = autorRepository.findByNome(aDto.getName());
+                autor = autorExistente.orElseGet(() -> {
+                    Autor novoAutor = new Autor(aDto.getName(), aDto.getBirthYear(), aDto.getDeathYear());
+                    return autorRepository.save(novoAutor);
+                });
             }
 
             Livro livro = new Livro(
@@ -84,6 +84,7 @@ public class ConsumoApi {
                     bookDto.getDownloads(),
                     autor
             );
+
             livroRepository.save(livro);
             contador++;
         }

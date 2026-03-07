@@ -1,7 +1,5 @@
 package br.com.alura.literalura;
 
-import br.com.alura.literalura.repository.AutorRepository;
-import br.com.alura.literalura.repository.LivroRepository;
 import br.com.alura.literalura.service.ConsumoApi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,15 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LiteraluraApplication implements CommandLineRunner {
 
-	private final AutorRepository autorRepository;
-	private final LivroRepository livroRepository;
 	private final ConsumoApi consumoApi; // já injetado via construtor
 
-	public LiteraluraApplication(AutorRepository autorRepository,
-								 LivroRepository livroRepository,
-								 ConsumoApi consumoApi) {
-		this.autorRepository = autorRepository;
-		this.livroRepository = livroRepository;
+	public LiteraluraApplication(ConsumoApi consumoApi) {
 		this.consumoApi = consumoApi;
 	}
 
@@ -27,18 +19,24 @@ public class LiteraluraApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		// Exemplos de uso: busca e salva livros na base
+	public void run(String... args) {
+		// Array de títulos a serem buscados
 		String[] titulosParaBuscar = {"dom casmurro", "dom quixote"};
 
 		for (String titulo : titulosParaBuscar) {
-			System.out.println("Buscando livro: " + titulo);
-			int quantidadeSalvos = consumoApi.salvarLivrosGutendex(titulo);
-			if (quantidadeSalvos == 0) {
-				System.out.println("Nenhum livro encontrado para: " + titulo);
-			} else {
-				System.out.println(quantidadeSalvos + " livro(s) salvo(s) com sucesso!");
-			}
+			buscarESalvarLivro(titulo);
+		}
+	}
+
+	/** Método auxiliar para buscar e salvar livros na base */
+	private void buscarESalvarLivro(String titulo) {
+		System.out.println("Buscando livro: " + titulo);
+		int quantidadeSalvos = consumoApi.salvarLivrosGutendex(titulo);
+
+		if (quantidadeSalvos == 0) {
+			System.out.println("Nenhum livro encontrado para: " + titulo);
+		} else {
+			System.out.println(quantidadeSalvos + " livro(s) salvo(s) com sucesso!");
 		}
 	}
 }
