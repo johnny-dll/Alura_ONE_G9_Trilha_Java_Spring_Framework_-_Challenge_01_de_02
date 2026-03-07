@@ -5,6 +5,7 @@
 
 Catálogo de livros funcional integrado à API Gutendex, desenvolvido como parte do programa Oracle Next Education (ONE). O projeto foca no consumo de APIs REST, processamento de JSON e persistência de dados relacionais para gestão de bibliotecas.
 
+
 ## 🛠️ Tech Stack
 
 Language: Java 17 (LTS) ☕
@@ -28,13 +29,11 @@ Repository: GitHub
 
 Clone o repositório:
 
-git clone [https://github.com/johnny-dll/literalura.git](https://github.com/johnny-dll/literalura.git)
-
+git clone https://github.com/johnny-dll/literalura.git
 
 Acesse a pasta do projeto:
 
 cd literalura
-
 
 Configure o banco de dados:
 Ajuste o arquivo src/main/resources/application.properties com suas credenciais do PostgreSQL.
@@ -72,6 +71,5 @@ spring.datasource.password=sua_senha
 
 João Paulo Z. Llorca
 
-
-- [@GitHub](https://www.github.com/johnny-dll)
+- [@GitHub](https://github.com/johnny-dll)
 - [@LinkedIn](https://www.linkedin.com/in/joaopaulozllorca/)
