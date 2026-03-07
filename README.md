@@ -29,7 +29,7 @@ Repository: GitHub
 
 Clone o repositório:
 
-git clone https://github.com/johnny-dll/literalura.git
+git clone https://github.com/johnny-dll/Alure_ONE_G9_Trilha_Java_Spring_Framework_-_Challenge_01_de_02.git
 
 Acesse a pasta do projeto:
 
