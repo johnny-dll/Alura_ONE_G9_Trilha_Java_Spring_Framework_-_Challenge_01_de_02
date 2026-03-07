@@ -1,19 +1,25 @@
 package br.com.alura.literalura.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LivroDto {
 
+    @JsonAlias({"title", "book_title"}) // aceita "title" ou "book_title"
     private String title;
 
+    @JsonAlias({"language", "languages"})
     private String language;
 
+    @JsonAlias({"downloads", "download_count"})
     private int downloads;
 
-    @JsonProperty("author_name")
+    @JsonAlias({"author_name", "name"})
     private String authorName;
 
-    // Getters e setters
+    // ========================
+    // Getters e Setters
+    // ========================
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 

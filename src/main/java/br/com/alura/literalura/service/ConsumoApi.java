@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +29,7 @@ public class ConsumoApi {
         this.mapper = new ObjectMapper();
     }
 
-    /** Faz requisição HTTP e retorna o JSON como String */
+    /** Faz requisição HTTP GET e retorna o JSON como String. */
     public String obterDados(String endereco) {
         HttpClient client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)
@@ -47,7 +48,7 @@ public class ConsumoApi {
         }
     }
 
-    /** Busca livros na API Gutendex e converte o JSON para BookResponse */
+    /** Busca livros na API Gutendex e converte o JSON para BookResponse. */
     public BookResponse buscarLivroGutendex(String titulo) {
         String url = "https://gutendex.com/books/?search=" + titulo.replace(" ", "+");
         String json = obterDados(url);
@@ -59,7 +60,7 @@ public class ConsumoApi {
         }
     }
 
-    /** Salva livros e autores no banco */
+    /** Salva livros e autores no banco usando Optional<Autor>. */
     public int salvarLivrosGutendex(String titulo) {
         BookResponse response = buscarLivroGutendex(titulo);
         int contador = 0;
@@ -70,7 +71,7 @@ public class ConsumoApi {
             if (!bookDto.getAuthors().isEmpty()) {
                 BookResponse.Book.Author aDto = bookDto.getAuthors().get(0);
 
-                // Usando Optional<Autor> agora
+                // Busca autor existente como Optional
                 Optional<Autor> autorExistente = autorRepository.findByNome(aDto.getName());
                 autor = autorExistente.orElseGet(() -> {
                     Autor novoAutor = new Autor(aDto.getName(), aDto.getBirthYear(), aDto.getDeathYear());
@@ -78,17 +79,37 @@ public class ConsumoApi {
                 });
             }
 
-            Livro livro = new Livro(
-                    bookDto.getTitle(),
-                    bookDto.getLanguage().isEmpty() ? "desconhecido" : bookDto.getLanguage().get(0),
-                    bookDto.getDownloads(),
-                    autor
-            );
+            String idioma = (bookDto.getLanguage() == null || bookDto.getLanguage().isEmpty())
+                    ? "desconhecido"
+                    : bookDto.getLanguage().get(0);
 
+            Livro livro = new Livro(bookDto.getTitle(), idioma, bookDto.getDownloads(), autor);
             livroRepository.save(livro);
             contador++;
         }
 
-        return contador; // retorna quantos livros foram salvos
+        return contador;
+    }
+
+    /**
+     * Busca livros na API e retorna a lista de livros convertidos sem salvar no banco.
+     * Útil para testes e inspeção de dados antes do passo de persistência.
+     */
+    public List<Livro> buscarLivrosSemSalvar(String titulo) {
+        BookResponse response = buscarLivroGutendex(titulo);
+
+        return response.getResults().stream().map(bookDto -> {
+            Autor autor = null;
+            if (!bookDto.getAuthors().isEmpty()) {
+                BookResponse.Book.Author aDto = bookDto.getAuthors().get(0);
+                autor = new Autor(aDto.getName(), aDto.getBirthYear(), aDto.getDeathYear());
+            }
+
+            String idioma = (bookDto.getLanguage() == null || bookDto.getLanguage().isEmpty())
+                    ? "desconhecido"
+                    : bookDto.getLanguage().get(0);
+
+            return new Livro(bookDto.getTitle(), idioma, bookDto.getDownloads(), autor);
+        }).toList();
     }
 }

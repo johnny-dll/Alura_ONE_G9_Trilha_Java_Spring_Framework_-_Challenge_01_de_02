@@ -13,7 +13,9 @@ public class BookResponse {
     private String previous;
     private List<Book> results;
 
+    // ========================
     // Getters e Setters
+    // ========================
     public int getCount() { return count; }
     public void setCount(int count) { this.count = count; }
 
@@ -36,13 +38,16 @@ public class BookResponse {
                 '}';
     }
 
-    // Classe interna para mapear cada livro
+    // ========================
+    // Classe interna Book
+    // ========================
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Book {
 
         @JsonAlias({"title", "book_title"}) // aceita "title" ou "book_title"
         private String title;
 
+        @JsonAlias({"download_count", "downloads"})
         private int downloads;
 
         @JsonProperty("languages")
@@ -51,7 +56,9 @@ public class BookResponse {
         @JsonProperty("authors")
         private List<Author> authors;
 
+        // ========================
         // Getters e Setters
+        // ========================
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
 
@@ -74,20 +81,24 @@ public class BookResponse {
                     '}';
         }
 
+        // ========================
         // Classe interna Author
+        // ========================
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Author {
 
             @JsonAlias({"name", "author_name"}) // aceita "name" ou "author_name"
             private String name;
 
-            @JsonProperty("birth_year")
+            @JsonAlias({"birth_year"})
             private Integer birthYear;
 
-            @JsonProperty("death_year")
+            @JsonAlias({"death_year"})
             private Integer deathYear;
 
+            // ========================
             // Getters e Setters
+            // ========================
             public String getName() { return name; }
             public void setName(String name) { this.name = name; }
 
