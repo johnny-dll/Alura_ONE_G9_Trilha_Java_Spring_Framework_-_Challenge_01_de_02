@@ -203,4 +203,4 @@ public class LiteraluraApplication implements CommandLineRunner {
 			System.out.println("  Falecimento: " + a.getDeathYear());
 		}
 	}
-}
+}2

@@ -72,23 +72,47 @@ public class ConsumoApi {
 
         int contador = 0;
 
-        for (BookResponse.Book dto : response.getResults()) {
+        for (BookResponse.Book bookDto : response.getResults()) {
 
-            Autor autor = obterOuCriarAutor(dto);
+            // Evitar que livros dupliquem
+            Optional<Livro> livroExistente = livroRepository.findByTitulo(bookDto.getTitle());
 
-            String idioma = obterIdioma(dto);
-
-            Optional<Livro> livroExistente =
-                    livroRepository.findByTitulo(dto.getTitle());
-
-            if (livroExistente.isEmpty()) {
-
-                Livro livro = new Livro(dto.getTitle(), idioma, dto.getDownloads(), autor);
-                livro.setDataSalvo(LocalDate.now());
-
-                livroRepository.save(livro);
-                contador++;
+            if (livroExistente.isPresent()) {
+                continue;
             }
+
+            // Ignorar livros sem autor
+            if (bookDto.getAuthors() == null || bookDto.getAuthors().isEmpty()) {
+                System.out.println("Livro sem autor ignorado: " + bookDto.getTitle());
+                continue;
+            }
+
+            BookResponse.Book.Author aDto = bookDto.getAuthors().get(0);
+
+            Optional<Autor> autorExistente = autorRepository.findByNome(aDto.getName());
+
+            Autor autor = autorExistente.orElseGet(() -> {
+                Autor novoAutor = new Autor(aDto.getName(), aDto.getBirthYear(), aDto.getDeathYear());
+                return autorRepository.save(novoAutor);
+            });
+
+            String idioma = (bookDto.getLanguage() == null || bookDto.getLanguage().isEmpty())
+                    ? "desconhecido"
+                    : bookDto.getLanguage().get(0);
+
+            Livro livro = new Livro(
+                    bookDto.getTitle(),
+                    idioma,
+                    bookDto.getDownloads(),
+                    null,
+                    autor
+            );
+
+            livro.setDataSalvo(LocalDate.now());
+
+            livroRepository.save(livro);
+
+            contador++;
         }
 
         return contador;
