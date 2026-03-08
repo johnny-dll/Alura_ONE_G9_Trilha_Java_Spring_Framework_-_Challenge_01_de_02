@@ -8,14 +8,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookResponse {
 
-    private int count; // total de livros retornados
+    private int count;
     private String next;
     private String previous;
     private List<Book> results;
 
-    // ========================
-    // Getters e Setters
-    // ========================
     public int getCount() { return count; }
     public void setCount(int count) { this.count = count; }
 
@@ -38,27 +35,21 @@ public class BookResponse {
                 '}';
     }
 
-    // ========================
-    // Classe interna Book
-    // ========================
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Book {
 
-        @JsonAlias({"title", "book_title"}) // aceita "title" ou "book_title"
+        @JsonAlias({"title", "book_title"})
         private String title;
 
         @JsonAlias({"download_count", "downloads"})
         private int downloads;
 
         @JsonProperty("languages")
-        private List<String> language; // lista de idiomas ["pt","en"]
+        private List<String> language;
 
         @JsonProperty("authors")
         private List<Author> authors;
 
-        // ========================
-        // Getters e Setters
-        // ========================
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
 
@@ -81,13 +72,10 @@ public class BookResponse {
                     '}';
         }
 
-        // ========================
-        // Classe interna Author
-        // ========================
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Author {
 
-            @JsonAlias({"name", "author_name"}) // aceita "name" ou "author_name"
+            @JsonAlias({"name", "author_name"})
             private String name;
 
             @JsonAlias({"birth_year"})
@@ -96,9 +84,6 @@ public class BookResponse {
             @JsonAlias({"death_year"})
             private Integer deathYear;
 
-            // ========================
-            // Getters e Setters
-            // ========================
             public String getName() { return name; }
             public void setName(String name) { this.name = name; }
 

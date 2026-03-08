@@ -1,6 +1,7 @@
 package br.com.alura.literalura;
 
 import br.com.alura.literalura.service.LivroService;
+import br.com.alura.literalura.service.AutorService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,9 +12,12 @@ import java.util.Scanner;
 public class LiteraluraApplication implements CommandLineRunner {
 
 	private final LivroService livroService;
+	private final AutorService autorService;
+	private final Scanner scanner = new Scanner(System.in);
 
-	public LiteraluraApplication(LivroService livroService) {
+	public LiteraluraApplication(LivroService livroService, AutorService autorService) {
 		this.livroService = livroService;
+		this.autorService = autorService;
 	}
 
 	public static void main(String[] args) {
@@ -22,74 +26,46 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		menuPrincipal();
-	}
 
-	/**
-	 * MENU PRINCIPAL
-	 */
-	private void menuPrincipal() {
+		System.out.println("=== Bem-vindo ao Literalura ===");
 
-		Scanner scanner = new Scanner(System.in);
-		boolean sair = false;
+		boolean continuar = true;
 
-		while (!sair) {
-
-			System.out.println("\n===== LITERALURA =====");
-			System.out.println("1 - Buscar livro por título");
-			System.out.println("2 - Listar livros registrados");
-			System.out.println("3 - Listar livros por idioma");
+		while (continuar) {
+			System.out.println("\nEscolha uma opção:");
+			System.out.println("1 - Buscar e adicionar livro por título");
+			System.out.println("2 - Listar todos os livros");
+			System.out.println("3 - Estatísticas por idioma");
+			System.out.println("4 - Listar todos os autores");
 			System.out.println("0 - Sair");
-			System.out.print("Escolha uma opção: ");
 
 			String opcao = scanner.nextLine();
 
 			switch (opcao) {
-
 				case "1":
-					buscarLivro(scanner);
+					System.out.print("Digite o título do livro: ");
+					String titulo = scanner.nextLine();
+					livroService.buscarLivroPorTitulo(titulo);
 					break;
-
 				case "2":
 					livroService.listarLivros();
 					break;
-
 				case "3":
-					listarPorIdioma(scanner);
+					System.out.println("=== Estatísticas por idioma ===");
+					livroService.estatisticasPorIdioma()
+							.forEach((idioma, qtd) -> System.out.println("Idioma: " + idioma + " | Quantidade: " + qtd));
 					break;
-
+				case "4":
+					autorService.listarAutores();
+					break;
 				case "0":
-					sair = true;
-					System.out.println("Encerrando aplicação...");
+					continuar = false;
 					break;
-
 				default:
-					System.out.println("Opção inválida.");
+					System.out.println("Opção inválida!");
 			}
 		}
 
-		scanner.close();
+		System.out.println("Encerrando o Literalura. Até mais!");
 	}
-
-	/**
-	 * BUSCAR LIVRO
-	 */
-	private void buscarLivro(Scanner scanner) {
-
-		System.out.print("Digite o título do livro: ");
-		String titulo = scanner.nextLine();
-
-		livroService.buscarLivroPorTitulo(titulo);
-	}
-
-	/**
-	 * LISTAR POR IDIOMA
-	 */
-	private void listarPorIdioma(Scanner scanner) {
-
-		System.out.print("Digite o idioma (ex: en, pt, es, fr): ");
-		String idioma = scanner.nextLine();
-
-		livroService.listarLivrosPorIdioma(idioma);
-	}
-}3
+}

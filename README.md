@@ -41,37 +41,32 @@ Tecnologias utilizadas no projeto:
 Estrutura principal do projeto:
 
 src/main/java/br/com/alura/literalura
-
-dto
-└── BookResponse
-
-model
-├── Autor
-└── Livro
-
-repository
-├── AutorRepository
-└── LivroRepository
-
-service
-├── ConsumoApi
-├── ConverteDados
-└── LivroService
-
-LiteraluraApplication
+├── dto
+│   └── BookResponse
+├── model
+│   ├── Autor
+│   └── Livro
+├── repository
+│   ├── AutorRepository
+│   └── LivroRepository
+├── service
+│   ├── ConsumoApi
+│   ├── ConverteDados
+│   └── LivroService
+└── LiteraluraApplication
 
 Fluxo da aplicação:
 
-Menu CLI
-↓
-LivroService
-↓
-ConsumoApi → Gutendex API
-↓
-ConverteDados (JSON → DTO)
-↓
-Repository (JPA)
-↓
+Menu CLI  
+↓  
+LivroService  
+↓  
+ConsumoApi → Gutendex API  
+↓  
+ConverteDados (JSON → DTO)  
+↓  
+Repository (JPA)  
+↓  
 PostgreSQL
 
 ---
@@ -107,7 +102,6 @@ A aplicação roda via interface de linha de comando (CLI).
 Menu principal:
 
 ===== LITERALURA =====
-
 1 - Buscar livro por título
 2 - Listar livros registrados
 3 - Listar livros por idioma
@@ -137,9 +131,9 @@ Exibe todos os livros salvos no banco local.
 
 Exemplo de saída:
 
-Título: Dracula
-Autor: Bram Stoker
-Idioma: en
+Título: Dracula  
+Autor: Bram Stoker  
+Idioma: en  
 Downloads: 12345
 
 ---
@@ -161,11 +155,11 @@ fr → Francês
 
 Configure o arquivo application.properties:
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/literalura_db
-spring.datasource.username=seu_usuario
+spring.datasource.url=jdbc:postgresql://localhost:5432/literalura_db  
+spring.datasource.username=seu_usuario  
 spring.datasource.password=sua_senha
 
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=update  
 spring.jpa.show-sql=true
 
 Certifique-se de que o banco exista:
@@ -202,30 +196,21 @@ https://gutendex.com/
 
 ## 🧪 Teste Rápido
 
-1. Inicie a aplicação
+1. Inicie a aplicação:
 
 ./mvnw spring-boot:run
 
-2. Escolha a opção
+2. Escolha a opção 1 no menu
 
-1
+3. Busque um livro, por exemplo: Dracula
 
-3. Busque um livro
-
-Dracula
-
-4. Liste os livros
-
-2
+4. Liste os livros com a opção 2
 
 ---
 
 ## 👤 Autor
 
-João Paulo Z. Llorca
+João Paulo Llorca
 
-GitHub  
-https://github.com/johnny-dll
-
-LinkedIn  
-https://www.linkedin.com/in/joaopaulozllorca/
+GitHub: https://github.com/johnny-dll  
+LinkedIn: https://www.linkedin.com/in/joaopaulozllorca/

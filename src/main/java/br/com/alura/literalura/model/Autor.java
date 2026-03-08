@@ -12,7 +12,7 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 500)
     private String nome;
 
     @Column(name = "ano_nascimento")
@@ -21,17 +21,16 @@ public class Autor {
     @Column(name = "ano_falecimento")
     private Integer anoFalecimento;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Livro> livros = new ArrayList<>();
 
     // =========================
     // Construtores
     // =========================
 
-    // Obrigatório para JPA
     public Autor() {}
 
-    // Construtor usado no LivroService
+    // Construtor usado para criar Autor rapidamente
     public Autor(String nome) {
         this.nome = nome;
     }
@@ -87,10 +86,25 @@ public class Autor {
     // Métodos utilitários
     // =========================
 
+    /**
+     * Adiciona um livro ao autor e mantém a relação bidirecional
+     */
     public void adicionarLivro(Livro livro) {
         livros.add(livro);
         livro.setAutor(this);
     }
+
+    /**
+     * Remove um livro do autor e limpa a relação bidirecional
+     */
+    public void removerLivro(Livro livro) {
+        livros.remove(livro);
+        livro.setAutor(null);
+    }
+
+    // =========================
+    // toString
+    // =========================
 
     @Override
     public String toString() {

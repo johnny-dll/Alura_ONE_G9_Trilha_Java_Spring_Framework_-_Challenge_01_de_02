@@ -15,8 +15,10 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 1000) // evita bugs de não adcionar ã tabela se o título for muito longo
     private String titulo;
 
+    @Column(length = 100) // evita bugs de não adcionar ã tabela se o idioma for um pocuo mais longo
     private String idioma;
 
     private Integer downloads;

@@ -2,17 +2,19 @@ package br.com.alura.literalura.repository;
 
 import br.com.alura.literalura.model.Autor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AutorRepository extends JpaRepository<Autor, Long> {
 
-    // Consulta derivada para autores vivos em determinado ano
-    List<Autor> findByAnoNascimentoLessThanEqualAndAnoFalecimentoGreaterThanEqual(Integer anoNascimento, Integer anoFalecimento);
+    // Buscar autores vivos em um ano específico
+    @Query("SELECT a FROM Autor a WHERE a.anoNascimento <= :ano AND (a.anoFalecimento IS NULL OR a.anoFalecimento >= :ano)")
+    List<Autor> buscarAutoresVivosNoAno(Integer ano);
 
-    // Retorna Optional para evitar problemas de duplicidade
+    // Buscar autor pelo nome
     Optional<Autor> findByNome(String nome);
 }
