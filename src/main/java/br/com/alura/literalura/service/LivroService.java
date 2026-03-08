@@ -32,44 +32,76 @@ public class LivroService {
     // BUSCAR E SALVAR LIVRO POR TÍTULO
     // =========================
     public void buscarLivroPorTitulo(String tituloBusca) {
-        String url = ENDERECO_API + tituloBusca.replace(" ", "%20");
-        String json = consumoApi.obterDados(url);
-        BookResponse resposta = converteDados.obterDados(json, BookResponse.class);
-
-        if (resposta.getResults() == null || resposta.getResults().isEmpty()) {
-            System.out.println("Nenhum livro encontrado.");
+        if (tituloBusca == null || tituloBusca.trim().isEmpty()) {
+            System.out.println("Título inválido!");
             return;
+        }
+
+        try {
+            String url = ENDERECO_API + tituloBusca.trim().replace(" ", "%20");
+            String json = consumoApi.obterDados(url);
+
+            if (json == null || json.isEmpty()) {
+                System.out.println("Nenhuma resposta da API. Tente novamente mais tarde.");
+                return;
+            }
+
+            BookResponse resposta = converteDados.obterDados(json, BookResponse.class);
+            BookResponse.Book bookDto = obterPrimeiroLivro(resposta, tituloBusca);
+            if (bookDto == null) return;
+
+            Autor autor = recuperarOuCriarAutor(bookDto.getAuthors().get(0));
+            String idioma = obterIdioma(bookDto);
+
+            Livro livro = criarLivro(bookDto.getTitle(), idioma, bookDto.getDownloads(), autor);
+
+            livroRepository.save(livro);
+            System.out.println("Livro salvo com sucesso!");
+            System.out.println(livro);
+
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar ou salvar o livro: " + e.getMessage());
+        }
+    }
+
+    // =========================
+    // MÉTODOS AUXILIARES
+    // =========================
+
+    private BookResponse.Book obterPrimeiroLivro(BookResponse resposta, String tituloBusca) {
+        if (resposta.getResults() == null || resposta.getResults().isEmpty()) {
+            System.out.println("Nenhum livro encontrado para: " + tituloBusca);
+            return null;
         }
 
         BookResponse.Book bookDto = resposta.getResults().get(0);
-        String titulo = bookDto.getTitle();
 
-        if (livroRepository.existsByTitulo(titulo)) {
-            System.out.println("Livro já cadastrado no banco: " + titulo);
-            return;
+        if (livroRepository.existsByTitulo(bookDto.getTitle())) {
+            System.out.println("Livro já cadastrado no banco: " + bookDto.getTitle());
+            return null;
         }
 
         if (bookDto.getAuthors() == null || bookDto.getAuthors().isEmpty()) {
-            System.out.println("Livro sem autor ignorado: " + titulo);
-            return;
+            System.out.println("Livro sem autor ignorado: " + bookDto.getTitle());
+            return null;
         }
 
-        Autor autor = recuperarOuCriarAutor(bookDto.getAuthors().get(0));
+        return bookDto;
+    }
 
-        // ✅ Padroniza idioma em minúsculo para consistência
-        String idioma = (bookDto.getLanguage() != null && !bookDto.getLanguage().isEmpty())
+    private String obterIdioma(BookResponse.Book bookDto) {
+        return (bookDto.getLanguage() != null && !bookDto.getLanguage().isEmpty())
                 ? bookDto.getLanguage().get(0).toLowerCase()
                 : "desconhecido";
+    }
 
+    private Livro criarLivro(String titulo, String idioma, int downloads, Autor autor) {
         Livro livro = new Livro();
         livro.setTitulo(titulo);
         livro.setIdioma(idioma);
-        livro.setDownloads(bookDto.getDownloads());
+        livro.setDownloads(downloads);
         livro.setAutor(autor);
-
-        livroRepository.save(livro);
-        System.out.println("Livro salvo com sucesso!");
-        System.out.println(livro);
+        return livro;
     }
 
     // =========================
@@ -98,8 +130,12 @@ public class LivroService {
     // LISTAR LIVROS POR IDIOMA
     // =========================
     public void listarLivrosPorIdioma(String idioma) {
-        String idiomaLower = idioma.toLowerCase(); // garante consistência
-        List<Livro> livros = livroRepository.findByIdioma(idiomaLower);
+        if (idioma == null || idioma.trim().isEmpty()) {
+            System.out.println("Idioma inválido!");
+            return;
+        }
+
+        List<Livro> livros = livroRepository.findByIdioma(idioma.toLowerCase().trim());
         if (livros.isEmpty()) {
             System.out.println("Nenhum livro encontrado para o idioma: " + idioma);
             return;
@@ -111,15 +147,22 @@ public class LivroService {
     // CONTAR LIVROS POR IDIOMA (ESTATÍSTICA)
     // =========================
     public long contarPorIdioma(String idioma) {
-        return livroRepository.countByIdioma(idioma.toLowerCase()); // padroniza minúsculo
+        if (idioma == null || idioma.trim().isEmpty()) return 0;
+        return livroRepository.countByIdioma(idioma.toLowerCase().trim());
     }
 
     // =========================
     // ESTATÍSTICAS COMPLETAS POR IDIOMA
     // =========================
     public Map<String, Long> estatisticasPorIdioma() {
-        return livroRepository.findAll()
+        Map<String, Long> stats = livroRepository.findAll()
                 .stream()
                 .collect(Collectors.groupingBy(l -> l.getIdioma().toLowerCase(), Collectors.counting()));
+
+        if (stats.isEmpty()) {
+            System.out.println("Sem estatísticas pois não há livros em sua tabela.");
+        }
+
+        return stats;
     }
 }

@@ -30,12 +30,15 @@ public class Autor {
 
     public Autor() {}
 
-    // Construtor usado para criar Autor rapidamente
     public Autor(String nome) {
         this.nome = nome;
     }
 
-    // Construtor completo
+    public Autor(String nome, Integer anoNascimento) {
+        this.nome = nome;
+        this.anoNascimento = anoNascimento;
+    }
+
     public Autor(String nome, Integer anoNascimento, Integer anoFalecimento) {
         this.nome = nome;
         this.anoNascimento = anoNascimento;
@@ -78,28 +81,26 @@ public class Autor {
         return livros;
     }
 
+    // Evitar set direto da lista, mas mantido se necessário
     public void setLivros(List<Livro> livros) {
-        this.livros = livros;
+        this.livros = livros != null ? livros : new ArrayList<>();
     }
 
     // =========================
     // Métodos utilitários
     // =========================
 
-    /**
-     * Adiciona um livro ao autor e mantém a relação bidirecional
-     */
     public void adicionarLivro(Livro livro) {
-        livros.add(livro);
-        livro.setAutor(this);
+        if (livro != null && !livros.contains(livro)) {
+            livros.add(livro);
+            livro.setAutor(this);
+        }
     }
 
-    /**
-     * Remove um livro do autor e limpa a relação bidirecional
-     */
     public void removerLivro(Livro livro) {
-        livros.remove(livro);
-        livro.setAutor(null);
+        if (livro != null && livros.remove(livro)) {
+            livro.setAutor(null);
+        }
     }
 
     // =========================

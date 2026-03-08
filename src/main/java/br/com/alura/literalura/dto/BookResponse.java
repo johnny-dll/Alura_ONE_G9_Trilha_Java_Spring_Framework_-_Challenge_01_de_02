@@ -13,6 +13,7 @@ public class BookResponse {
     private String previous;
     private List<Book> results;
 
+    // ===== Getters e Setters =====
     public int getCount() { return count; }
     public void setCount(int count) { this.count = count; }
 
@@ -35,6 +36,9 @@ public class BookResponse {
                 '}';
     }
 
+    // =========================
+    // CLASSE INTERNA Book
+    // =========================
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Book {
 
@@ -50,6 +54,7 @@ public class BookResponse {
         @JsonProperty("authors")
         private List<Author> authors;
 
+        // ===== Getters e Setters =====
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
 
@@ -72,6 +77,9 @@ public class BookResponse {
                     '}';
         }
 
+        // =========================
+        // CLASSE INTERNA Author
+        // =========================
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Author {
 
@@ -84,6 +92,7 @@ public class BookResponse {
             @JsonAlias({"death_year"})
             private Integer deathYear;
 
+            // ===== Getters e Setters =====
             public String getName() { return name; }
             public void setName(String name) { this.name = name; }
 

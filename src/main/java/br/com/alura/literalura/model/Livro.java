@@ -15,10 +15,10 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1000) // evita bugs de não adcionar ã tabela se o título for muito longo
+    @Column(length = 1000, nullable = false)
     private String titulo;
 
-    @Column(length = 100) // evita bugs de não adcionar ã tabela se o idioma for um pocuo mais longo
+    @Column(length = 100, nullable = false)
     private String idioma;
 
     private Integer downloads;
@@ -43,9 +43,6 @@ public class Livro {
 
     public Livro() {}
 
-    /**
-     * Construtor principal usado ao salvar livros da API
-     */
     public Livro(String titulo, String idioma, Integer downloads, Autor autor) {
         this.titulo = titulo;
         this.idioma = idioma;
@@ -53,27 +50,20 @@ public class Livro {
         this.autor = autor;
     }
 
-    /**
-     * Construtor alternativo caso queira informar publicação
-     */
     public Livro(String titulo, String idioma, Integer downloads, Integer dataPublicacao, Autor autor) {
-        this.titulo = titulo;
-        this.idioma = idioma;
-        this.downloads = downloads;
+        this(titulo, idioma, downloads, autor);
         this.dataPublicacao = dataPublicacao;
-        this.autor = autor;
     }
 
     // ========================
     // JPA Lifecycle
     // ========================
 
-    /**
-     * Define automaticamente a data quando o livro é salvo no banco
-     */
     @PrePersist
     public void prePersist() {
-        this.dataSalvo = LocalDate.now();
+        if (dataSalvo == null) {
+            this.dataSalvo = LocalDate.now();
+        }
     }
 
     // ========================
@@ -138,7 +128,6 @@ public class Livro {
 
     @Override
     public String toString() {
-
         String autorNome = (autor != null && autor.getNome() != null)
                 ? autor.getNome()
                 : "Autor não definido";

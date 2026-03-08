@@ -34,15 +34,21 @@ public class AutorService {
     // LISTAR AUTORES VIVOS EM UM ANO ESPECÍFICO
     // =========================================
     public void listarAutoresVivosNoAno(Integer ano) {
-        List<Autor> autores = autorRepository.buscarAutoresVivosNoAno(ano);
+        if (ano == null || ano <= 0) {
+            System.out.println("Ano inválido! Digite um número inteiro positivo.");
+            return;
+        }
 
-        if (autores.isEmpty()) {
-            System.out.println("Nenhum autor estava vivo no ano " + ano);
+        List<Autor> autoresVivos = autorRepository
+                .findByAnoNascimentoLessThanEqualAndAnoFalecimentoGreaterThanEqualOrAnoFalecimentoIsNull(ano, ano);
+
+        if (autoresVivos.isEmpty()) {
+            exibirMensagemAutoresVivosVazio(ano);
             return;
         }
 
         System.out.println("\n----- AUTORES VIVOS EM " + ano + " -----\n");
-        autores.forEach(this::imprimirAutor);
+        autoresVivos.forEach(this::imprimirAutor);
     }
 
     // =========================
@@ -53,5 +59,17 @@ public class AutorService {
         System.out.println("Ano de nascimento: " + autor.getAnoNascimento());
         System.out.println("Ano de falecimento: " + (autor.getAnoFalecimento() != null ? autor.getAnoFalecimento() : "Vivo"));
         System.out.println("-------------------------------");
+    }
+
+    // =========================
+    // MENSAGENS AUXILIARES
+    // =========================
+    private void exibirMensagemAutoresVivosVazio(Integer ano) {
+        long totalAutores = autorRepository.count();
+        if (totalAutores == 0) {
+            System.out.println("Sem autores cadastrados na tabela.");
+        } else {
+            System.out.println("Nenhum autor estava vivo no ano " + ano);
+        }
     }
 }

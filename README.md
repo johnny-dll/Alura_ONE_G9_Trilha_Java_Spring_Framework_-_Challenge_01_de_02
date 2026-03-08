@@ -42,18 +42,19 @@ Estrutura principal do projeto:
 
 src/main/java/br/com/alura/literalura
 ├── dto
-│   └── BookResponse
+│   └── BookResponse.java
 ├── model
-│   ├── Autor
-│   └── Livro
+│   ├── Autor.java
+│   └── Livro.java
 ├── repository
-│   ├── AutorRepository
-│   └── LivroRepository
+│   ├── AutorRepository.java
+│   └── LivroRepository.java
 ├── service
-│   ├── ConsumoApi
-│   ├── ConverteDados
-│   └── LivroService
-└── LiteraluraApplication
+│   ├── ConsumoApi.java
+│   ├── ConverteDados.java
+│   ├── LivroService.java
+│   └── AutorService.java
+└── LiteraluraApplication.java
 
 Fluxo da aplicação:
 
@@ -104,7 +105,9 @@ Menu principal:
 ===== LITERALURA =====
 1 - Buscar livro por título
 2 - Listar livros registrados
-3 - Listar livros por idioma
+3 - Estatísticas por idioma
+4 - Listar todos os autores
+5 - Listar autores vivos em um ano
 0 - Sair
 
 ---

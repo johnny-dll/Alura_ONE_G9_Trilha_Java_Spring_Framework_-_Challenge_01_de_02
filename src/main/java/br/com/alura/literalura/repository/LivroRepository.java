@@ -11,19 +11,31 @@ import java.util.Optional;
 @Repository
 public interface LivroRepository extends JpaRepository<Livro, Long> {
 
-    // Buscar livros por idioma
+    /**
+     * Buscar livros pelo idioma (ex.: "português", "english").
+     * O idioma deve estar padronizado em minúsculo para consistência.
+     */
     List<Livro> findByIdioma(String idioma);
 
-    // Buscar livro pelo título
+    /**
+     * Buscar um livro pelo título exato.
+     */
     Optional<Livro> findByTitulo(String titulo);
 
-    // Verifica se um livro já existe pelo título
+    /**
+     * Verifica se um livro já existe pelo título.
+     */
     boolean existsByTitulo(String titulo);
 
-    // Contar livros por idioma (Spring Data derived query)
+    /**
+     * Contar livros por idioma (retorna um long).
+     */
     long countByIdioma(String idioma);
 
-    // Consulta customizada para retornar estatísticas completas por idioma
+    /**
+     * Consulta customizada para retornar estatísticas completas por idioma.
+     * Retorna lista de objetos [idioma, quantidade]
+     */
     @Query("SELECT l.idioma, COUNT(l) FROM Livro l GROUP BY l.idioma")
     List<Object[]> countLivrosPorIdioma();
 }
