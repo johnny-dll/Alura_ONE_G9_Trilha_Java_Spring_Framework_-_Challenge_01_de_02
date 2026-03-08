@@ -24,16 +24,28 @@ public class Autor {
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Livro> livros = new ArrayList<>();
 
-    // Construtor padrão (obrigatório para JPA)
+    // =========================
+    // Construtores
+    // =========================
+
+    // Obrigatório para JPA
     public Autor() {}
 
+    // Construtor usado no LivroService
+    public Autor(String nome) {
+        this.nome = nome;
+    }
+
+    // Construtor completo
     public Autor(String nome, Integer anoNascimento, Integer anoFalecimento) {
         this.nome = nome;
         this.anoNascimento = anoNascimento;
         this.anoFalecimento = anoFalecimento;
     }
 
+    // =========================
     // Getters e Setters
+    // =========================
 
     public Long getId() {
         return id;
@@ -71,7 +83,14 @@ public class Autor {
         this.livros = livros;
     }
 
-    // Método utilitário
+    // =========================
+    // Métodos utilitários
+    // =========================
+
+    public void adicionarLivro(Livro livro) {
+        livros.add(livro);
+        livro.setAutor(this);
+    }
 
     @Override
     public String toString() {

@@ -14,5 +14,4 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
     List<Livro> findByIdioma(String idioma);
 
     // Novo método para verificar se o livro já existe pelo título
-    Optional<Livro> findByTitulo(String titulo);
-}
+    Optional<Livro> findByTitulo(String titulo);}

@@ -2,94 +2,230 @@
 
 ## 📋 Descrição do Projeto
 
-Catálogo de livros funcional integrado à API Gutendex, desenvolvido como parte do programa Oracle Next Education (ONE). O projeto foca no consumo de APIs REST, processamento de JSON e persistência de dados relacionais para gestão de bibliotecas.
+O LiterAlura é uma aplicação Java que funciona como um catálogo de livros integrado à API pública Gutendex (Project Gutenberg).
+
+O sistema permite:
+
+- Buscar livros por título diretamente na API
+- Persistir os resultados em um banco relacional
+- Listar livros armazenados
+- Filtrar livros por idioma
+
+Este projeto foi desenvolvido como parte do programa Oracle Next Education (ONE) em parceria com a Alura, com foco em:
+
+- consumo de APIs REST
+- manipulação de JSON
+- persistência de dados com JPA/Hibernate
+- arquitetura em camadas com Spring Boot
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Language:** Java 17 (LTS) ☕
-- **Framework:** Spring Boot 3.2.3
-- **Persistence:** Spring Data JPA (Hibernate)
-- **Database:** PostgreSQL 16
-- **JSON Processing:** Jackson
-- **Build Tool:** Maven
-- **Version Control:** Git
-- **Repository:** GitHub
+Tecnologias utilizadas no projeto:
+
+- Java 17 (LTS)
+- Spring Boot 3
+- Spring Data JPA
+- Hibernate (ORM)
+- PostgreSQL 16
+- Jackson (JSON Processing)
+- Maven (Build Tool)
+- Git
+- GitHub
+
+---
+
+## 🏗️ Arquitetura do Projeto
+
+Estrutura principal do projeto:
+
+src/main/java/br/com/alura/literalura
+
+dto
+└── BookResponse
+
+model
+├── Autor
+└── Livro
+
+repository
+├── AutorRepository
+└── LivroRepository
+
+service
+├── ConsumoApi
+├── ConverteDados
+└── LivroService
+
+LiteraluraApplication
+
+Fluxo da aplicação:
+
+Menu CLI
+↓
+LivroService
+↓
+ConsumoApi → Gutendex API
+↓
+ConverteDados (JSON → DTO)
+↓
+Repository (JPA)
+↓
+PostgreSQL
+
+---
 
 ## 🚀 Como Rodar Localmente
 
 Clone o repositório:
 
-```
 git clone https://github.com/johnny-dll/Alure_ONE_G9_Trilha_Java_Spring_Framework_-_Challenge_01_de_02.git
-```
 
 Acesse a pasta do projeto:
 
-```
 cd literalura
-```
 
-Configure o banco de dados:  
-Ajuste o arquivo `src/main/resources/application.properties` com suas credenciais do PostgreSQL.
+Configure o banco de dados no arquivo:
+
+src/main/resources/application.properties
 
 Execute a aplicação:
 
-```
 ./mvnw spring-boot:run
-```
 
-> ⚠️ **Observação:** garanta que o profile `local` esteja ativo para usar o banco de desenvolvimento.
+Ou execute pelo IntelliJ:
+
+Run → LiteraluraApplication
+
+---
 
 ## 💻 Menu Interativo (Console)
 
-A interação ocorre diretamente via terminal através de um menu intuitivo:
+A aplicação roda via interface de linha de comando (CLI).
 
-- `[1]` | Buscar livro pelo título: Consome a API Gutendex e persiste no banco.
-- `[2]` | Listar livros: Exibe todos os registros salvos localmente.
-- `[3]` | Listar autores: Mostra todos os autores cadastrados no banco.
-- `[4]` | Autores vivos em determinado ano: Realiza um filtro temporal de autores.
-- `[5]` | Listar livros por idioma: Filtro por siglas (PT, EN, FR, ES).
+Menu principal:
 
-## 🔑 Configurações (Environment Variables)
+===== LITERALURA =====
 
-Para rodar este projeto, configure as seguintes propriedades no `application.properties`:
+1 - Buscar livro por título
+2 - Listar livros registrados
+3 - Listar livros por idioma
+0 - Sair
 
-```
+---
+
+## 🔎 Buscar livro por título
+
+Consulta a API Gutendex:
+
+https://gutendex.com/books/?search={titulo}
+
+Fluxo da busca:
+
+1. Consome a API
+2. Obtém o primeiro resultado
+3. Converte o JSON para DTO
+4. Cria entidades Autor e Livro
+5. Persiste os dados no banco
+
+---
+
+## 📚 Listar livros registrados
+
+Exibe todos os livros salvos no banco local.
+
+Exemplo de saída:
+
+Título: Dracula
+Autor: Bram Stoker
+Idioma: en
+Downloads: 12345
+
+---
+
+## 🌎 Listar livros por idioma
+
+Permite filtrar livros pelo idioma registrado.
+
+Exemplos de códigos de idioma:
+
+en → Inglês  
+pt → Português  
+es → Espanhol  
+fr → Francês
+
+---
+
+## 🔑 Configuração do Banco
+
+Configure o arquivo application.properties:
+
 spring.datasource.url=jdbc:postgresql://localhost:5432/literalura_db
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
-spring.profiles.active=local
-```
 
-> ⚠️ **Dica:** garanta que o banco `literalura_db` esteja criado e acessível localmente antes de iniciar a aplicação.
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 
-## 🧹 Limpeza do Banco para Testes
+Certifique-se de que o banco exista:
 
-Para garantir que os testes rodem com o banco limpo, você pode executar no PostgreSQL:
+literalura_db
 
-```
+---
+
+## 🧹 Limpeza do Banco (Testes)
+
+Para limpar os dados durante testes execute no PostgreSQL:
+
 TRUNCATE TABLE autor, livro RESTART IDENTITY CASCADE;
-```
 
 Explicação:
 
-- `TRUNCATE TABLE` → apaga todos os registros das tabelas.
-- `RESTART IDENTITY` → reseta os IDs auto-increment.
-- `CASCADE` → remove dependências de foreign keys automaticamente.
+TRUNCATE → remove todos os registros  
+RESTART IDENTITY → reinicia IDs auto-increment  
+CASCADE → remove dependências entre tabelas
 
-> 💡 Use este comando antes de cada teste para evitar duplicações ou conflitos.
+---
 
-## 🧪 Testes Locais
+## 🌐 API Utilizada
 
-1. Inicie a aplicação com `./mvnw spring-boot:run`.
-2. No menu interativo, selecione `[1]` e busque um livro conhecido.
-3. Verifique se o livro foi salvo no banco e se aparece na listagem `[2]`.
-4. Teste listagem de autores `[3]` e filtros `[4]` e `[5]` para garantir integridade dos dados.
-5. Observe os logs no console para confirmar conexão com o PostgreSQL e operações Hibernate sem erros.
+Este projeto consome a API pública:
+
+https://gutendex.com/books/
+
+Documentação:
+
+https://gutendex.com/
+
+---
+
+## 🧪 Teste Rápido
+
+1. Inicie a aplicação
+
+./mvnw spring-boot:run
+
+2. Escolha a opção
+
+1
+
+3. Busque um livro
+
+Dracula
+
+4. Liste os livros
+
+2
+
+---
 
 ## 👤 Autor
 
 João Paulo Z. Llorca
 
-- [GitHub](https://github.com/johnny-dll)
-- [LinkedIn](https://www.linkedin.com/in/joaopaulozllorca/)
+GitHub  
+https://github.com/johnny-dll
+
+LinkedIn  
+https://www.linkedin.com/in/joaopaulozllorca/
